@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生日快乐</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: #fff;
+            animation: fadeIn 3s ease-in-out;
+        }
+
+        .title-container {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .birthday-text {
+            font-size: 4rem;
+            font-weight: bold;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            display: inline-block;
+            margin: 0 10px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+            animation: bounce 2s ease-in-out infinite;
+            transform-origin: center bottom;
+        }
+
+        .char-1 { color: #ff6b9d; animation-delay: 0s; }
+        .char-2 { color: #4ecdc4; animation-delay: 0.1s; }
+        .char-3 { color: #45b7d1; animation-delay: 0.2s; }
+        .char-4 { color: #feca57; animation-delay: 0.3s; }
+
+        .hbd-text {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            display: inline-block;
+            margin: 0 5px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+            animation: wiggle 1.5s ease-in-out infinite;
+        }
+
+        .hbd-h { color: #ffd93d; }
+        .hbd-b { color: #ff6b9d; }
+        .hbd-d { color: #a8e6cf; }
+
+        .crown {
+            position: absolute;
+            top: -30px;
+            left: -20px;
+            font-size: 2.5rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .cake {
+            position: absolute;
+            bottom: -40px;
+            right: -30px;
+            font-size: 3rem;
+            animation: rotate 4s linear infinite;
+        }
+
+        .subtitle {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #ff69b4;
+            text-shadow: 0 0 10px rgba(255, 105, 180, 0.6);
+        }
+
+        .message {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 20px;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+        }
+
+        .music-control {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 3;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .music-control:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0) scale(1); }
+            40% { transform: translateY(-20px) scale(1.1); }
+            60% { transform: translateY(-10px) scale(1.05); }
+        }
+
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(-5deg) scale(1.05); }
+            75% { transform: rotate(5deg) scale(1.05); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(10deg); }
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .birthday-text {
+                font-size: 2.5rem;
+            }
+            .hbd-text {
+                font-size: 2rem;
+            }
+            .crown {
+                font-size: 2rem;
+                top: -20px;
+                left: -15px;
+            }
+            .cake {
+                font-size: 2.5rem;
+                bottom: -30px;
+                right: -20px;
+            }
+            .subtitle {
+                font-size: 1.5rem;
+            }
+            .message {
+                font-size: 1rem;
+                padding: 0 15px;
+            }
+            .music-control {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .birthday-text {
+                font-size: 2rem;
+            }
+            .hbd-text {
+                font-size: 1.5rem;
+            }
+            .crown {
+                font-size: 1.5rem;
+                top: -15px;
+                left: -10px;
+            }
+            .cake {
+                font-size: 2rem;
+                bottom: -25px;
+                right: -15px;
+            }
+            .subtitle {
+                font-size: 1.2rem;
+            }
+            .message {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+    <div class="content">
+        <div class="title-container">
+            <div class="crown">👑</div>
+            <div>
+                <span class="birthday-text char-1">生</span>
+                <span class="birthday-text char-2">日</span>
+                <span class="birthday-text char-3">快</span>
+                <span class="birthday-text char-4">乐</span>
+            </div>
+            <div style="margin-top: 10px;">
+                <span class="hbd-text hbd-h">P</span>
+                <span class="hbd-text hbd-b">Y</span>
+            </div>
+            <div class="cake">�</div>
+        </div>
+        <h2 class="subtitle">🎂 祝潘迎生日快乐 �</h2>
+        <div class="message">
+            <p>🎈 愿你的每一天都充满阳光与快乐</p>
+            <p>✨ 愿你所有的梦想都能成真</p>
+            <p>🎁 愿你永远年轻美丽，笑容灿烂</p>
+            <p>💖 祝你生日快乐，天天开心！</p>
+        </div>
+    </div>
+
+    <button class="music-control" id="musicBtn" onclick="toggleMusic()">🎵</button>
+
+    <audio id="bgMusic" loop preload="auto">
+        <!-- 本地生日快乐歌曲（首选） -->
+        <source src="生日快乐歌曲.mp3" type="audio/mpeg">
+        <!-- 备用远程音乐源 -->
+        <source src="https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3" type="audio/mpeg">
+        <source src="https://file-examples.com/storage/fe68c8a7d4e2187c8d8b4e6/2017/11/file_example_MP3_700KB.mp3" type="audio/mpeg">
+        您的浏览器不支持音频播放
+    </audio>
+
+    <!-- 备用音乐播放器 -->
+    <audio id="bgMusic2" loop preload="auto" style="display: none;">
+        <!-- 简单的音频数据，确保有声音 -->
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmGgU7k9n1unEiBC13yO/eizEIHWq+8+OWT" type="audio/wav">
+    </audio>
+
+    <!-- 音乐状态提示 -->
+    <div id="musicStatus" style="position: fixed; top: 80px; right: 20px; z-index: 3; background: rgba(0,0,0,0.7); color: white; padding: 10px; border-radius: 5px; font-size: 12px; display: none; max-width: 200px;">
+        正在加载音乐...
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const musicBtn = document.getElementById('musicBtn');
+        const bgMusic = document.getElementById('bgMusic');
+        const bgMusic2 = document.getElementById('bgMusic2');
+        const musicStatus = document.getElementById('musicStatus');
+
+        let isPlaying = false;
+        let currentMusic = bgMusic;
+        let fireworks = [];
+        let particles = [];
+        let lastFireworkTime = 0; // 上次创建烟花的时间
+        let minFireworkInterval = 1000; // 最小烟花间隔（毫秒）
+        let maxFireworks = 8; // 屏幕上最大烟花数量
+
+        // 显示音乐状态提示
+        function showMusicStatus(message, duration = 3000) {
+            musicStatus.textContent = message;
+            musicStatus.style.display = 'block';
+
+            if (duration > 0) {
+                setTimeout(() => {
+                    musicStatus.style.display = 'none';
+                }, duration);
+            }
+        }
+
+        // 生日祝福音乐列表（本地文件优先）
+        const musicSources = [
+            // 本地生日快乐歌曲（最高优先级）
+            '生日快乐歌曲.mp3',
+            // 备用远程音乐资源
+            'https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3',
+            'https://file-examples.com/storage/fe68c8a7d4e2187c8d8b4e6/2017/11/file_example_MP3_700KB.mp3',
+            'https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3',
+            'https://www.soundjay.com/misc/sounds/magic-chime-02.mp3',
+            // 更多备用音乐源
+            'https://actions.google.com/sounds/v1/celebrations/birthday_party_horn.ogg',
+            'https://freesound.org/data/previews/316/316847_5123451-lq.mp3',
+            // 如果上述都失败，使用原来的音乐源
+            'http://dlb.888dly.vip/174/static/music/happy_birthday.mp3'
+        ];
+
+        let currentSourceIndex = 0;
+
+        // 设置画布大小
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // 尝试加载下一个音乐源
+        function tryNextMusicSource() {
+            if (currentSourceIndex < musicSources.length) {
+                const currentSource = musicSources[currentSourceIndex];
+                console.log(`尝试播放音乐源 ${currentSourceIndex + 1}/${musicSources.length}: ${currentSource}`);
+
+                currentMusic.src = currentSource;
+                currentSourceIndex++;
+
+                // 添加加载事件监听
+                return new Promise((resolve, reject) => {
+                    const onCanPlay = () => {
+                        const isLocalMusic = currentSource.includes('生日快乐歌曲.mp3');
+                        const message = isLocalMusic ? '🎵 生日快乐歌曲加载成功' : '🎵 音乐加载成功';
+                        console.log(message + '，开始播放');
+                        currentMusic.removeEventListener('canplay', onCanPlay);
+                        currentMusic.removeEventListener('error', onError);
+                        currentMusic.play().then(resolve).catch(reject);
+                    };
+
+                    const onError = (e) => {
+                        console.log(`音乐源 ${currentSourceIndex} 加载失败:`, e);
+                        currentMusic.removeEventListener('canplay', onCanPlay);
+                        currentMusic.removeEventListener('error', onError);
+                        tryNextMusicSource().then(resolve).catch(reject);
+                    };
+
+                    currentMusic.addEventListener('canplay', onCanPlay);
+                    currentMusic.addEventListener('error', onError);
+
+                    // 设置超时
+                    setTimeout(() => {
+                        console.log(`音乐源 ${currentSourceIndex} 加载超时`);
+                        onError(new Error('加载超时'));
+                    }, 5000);
+
+                    currentMusic.load();
+                });
+            } else {
+                console.log('所有音乐源都无法播放，使用备用音乐');
+                currentMusic = bgMusic2;
+                return currentMusic.play().catch(e => {
+                    console.log('备用音乐也无法播放:', e);
+                    // 创建简单的音效
+                    createSimpleBeep();
+                    return Promise.resolve();
+                });
+            }
+        }
+
+        // 创建简单的生日歌音效（当所有音乐都无法播放时）
+        function createSimpleBeep() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+                // 生日歌的简单旋律 (Happy Birthday to You)
+                const notes = [
+                    {freq: 261.63, duration: 0.5}, // C4
+                    {freq: 261.63, duration: 0.5}, // C4
+                    {freq: 293.66, duration: 1.0}, // D4
+                    {freq: 261.63, duration: 1.0}, // C4
+                    {freq: 349.23, duration: 1.0}, // F4
+                    {freq: 329.63, duration: 2.0}, // E4
+                ];
+
+                let currentTime = audioContext.currentTime;
+
+                notes.forEach((note, index) => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+
+                    oscillator.frequency.setValueAtTime(note.freq, currentTime);
+                    oscillator.type = 'sine';
+
+                    gainNode.gain.setValueAtTime(0, currentTime);
+                    gainNode.gain.linearRampToValueAtTime(0.3, currentTime + 0.1);
+                    gainNode.gain.linearRampToValueAtTime(0, currentTime + note.duration);
+
+                    oscillator.start(currentTime);
+                    oscillator.stop(currentTime + note.duration);
+
+                    currentTime += note.duration;
+                });
+
+                console.log('播放简单生日歌音效');
+
+            } catch (error) {
+                console.log('无法创建音效:', error);
+            }
+        }
+
+        // 音乐控制
+        function toggleMusic() {
+            if (isPlaying) {
+                currentMusic.pause();
+                musicBtn.textContent = '🎵';
+                musicBtn.style.opacity = '0.6';
+                musicBtn.title = '点击播放音乐';
+                isPlaying = false;
+                showMusicStatus('音乐已暂停');
+                console.log('音乐已暂停');
+            } else {
+                musicBtn.textContent = '🔄';
+                musicBtn.style.opacity = '0.8';
+                musicBtn.title = '正在加载音乐...';
+                showMusicStatus('正在加载音乐...', 0);
+                console.log('开始尝试播放音乐');
+
+                // 重置音乐源索引，从第一个开始尝试
+                currentSourceIndex = 0;
+
+                tryNextMusicSource().then(() => {
+                    musicBtn.textContent = '🔊';
+                    musicBtn.style.opacity = '1';
+                    musicBtn.title = '点击暂停音乐';
+                    isPlaying = true;
+
+                    // 检查是否播放的是本地生日歌曲
+                    const isLocalMusic = currentMusic.src.includes('生日快乐歌曲.mp3');
+                    const statusMessage = isLocalMusic ? '🎂 生日快乐歌曲播放中' : '🎵 音乐播放中';
+                    showMusicStatus(statusMessage);
+                    console.log('音乐播放成功');
+                }).catch((error) => {
+                    musicBtn.textContent = '❌';
+                    musicBtn.style.opacity = '0.6';
+                    musicBtn.title = '音乐播放失败，点击重试';
+                    isPlaying = false;
+                    showMusicStatus('❌ 音乐播放失败，已播放音效', 5000);
+                    console.log('音乐播放失败:', error);
+
+                    // 3秒后恢复按钮状态
+                    setTimeout(() => {
+                        musicBtn.textContent = '🎵';
+                        musicBtn.title = '点击播放音乐';
+                    }, 3000);
+                });
+            }
+        }
+
+        // 音乐加载错误处理
+        bgMusic.addEventListener('error', function() {
+            console.log('主音乐加载失败，尝试下一个源');
+            tryNextMusicSource();
+        });
+
+        bgMusic2.addEventListener('error', function() {
+            console.log('备用音乐加载失败');
+        });
+
+        // 自动播放音乐（需要用户交互）
+        document.addEventListener('click', function() {
+            if (!isPlaying) {
+                toggleMusic();
+            }
+        }, { once: true });
+
+        // 礼花粒子类
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                // 增加粒子速度和扩散范围
+                this.vx = (Math.random() - 0.5) * 16;
+                this.vy = (Math.random() - 0.5) * 16;
+                this.color = color;
+                this.life = 1;
+                this.decay = Math.random() * 0.012 + 0.006; // 优化生命周期，让烟花持续更久
+                this.size = Math.random() * 5 + 2; // 增加粒子大小
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vy += 0.1; // 重力
+                this.life -= this.decay;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.life;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        // 数字礼花类
+        class NumberFirework {
+            constructor(x, y, number) {
+                this.x = x;
+                this.y = y;
+                this.number = number;
+                this.particles = [];
+                this.colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3', '#54a0ff'];
+                this.exploded = false;
+                this.timer = 0;
+            }
+
+            explode() {
+                if (this.exploded) return;
+                this.exploded = true;
+
+                // 优化粒子数量，平衡视觉效果和性能
+                const particleCount = 60;
+                for (let i = 0; i < particleCount; i++) {
+                    const color = this.colors[Math.floor(Math.random() * this.colors.length)];
+                    const particle = new Particle(this.x, this.y, color);
+                    this.particles.push(particle);
+                }
+            }
+
+            update() {
+                this.timer++;
+                // 对于屏幕中间的烟花，立即爆炸；对于底部的烟花，等待上升
+                const shouldExplodeImmediately = this.y < canvas.height * 0.9;
+                const explodeTime = shouldExplodeImmediately ? 10 : 60;
+
+                if (this.timer > explodeTime && !this.exploded) {
+                    this.explode();
+                }
+
+                this.particles = this.particles.filter(particle => {
+                    particle.update();
+                    return particle.life > 0;
+                });
+            }
+
+            draw() {
+                if (!this.exploded) {
+                    // 绘制上升的数字
+                    ctx.save();
+                    ctx.fillStyle = '#fff';
+                    ctx.font = 'bold 30px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(this.number, this.x, this.y - this.timer * 2);
+                    ctx.restore();
+                }
+
+                this.particles.forEach(particle => particle.draw());
+            }
+        }
+
+        // 创建礼花（带时间间隔和数量控制）
+        function createFirework() {
+            const currentTime = Date.now();
+            if (currentTime - lastFireworkTime < minFireworkInterval || fireworks.length >= maxFireworks) {
+                return; // 如果间隔太短或烟花太多，不创建新烟花
+            }
+
+            // 在整个屏幕范围内随机生成烟花
+            const x = Math.random() * canvas.width;
+            const y = Math.random() * canvas.height * 0.8; // 避免在最底部20%生成
+            const numbers = ['🎂', '🎉', '🎈', '🌟', '💖', '🎁', '✨', '🎊', '🥳', '🎈'];
+            const number = numbers[Math.floor(Math.random() * numbers.length)];
+            fireworks.push(new NumberFirework(x, y, number));
+            lastFireworkTime = currentTime;
+        }
+
+        // 创建从底部上升的礼花（传统烟花效果）
+        function createRisingFirework() {
+            const currentTime = Date.now();
+            if (currentTime - lastFireworkTime < minFireworkInterval * 0.8 || fireworks.length >= maxFireworks) {
+                return; // 稍微短一点的间隔，同样检查数量限制
+            }
+
+            const x = Math.random() * canvas.width;
+            const y = canvas.height;
+            const numbers = ['🎆', '✨', '💫'];
+            const number = numbers[Math.floor(Math.random() * numbers.length)];
+            fireworks.push(new NumberFirework(x, y, number));
+            lastFireworkTime = currentTime;
+        }
+
+        // 动画循环
+        function animate() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // 更新和绘制礼花
+            fireworks = fireworks.filter(firework => {
+                firework.update();
+                firework.draw();
+                return firework.particles.length > 0 || !firework.exploded;
+            });
+
+            // 随机创建新礼花 - 进一步优化频率，更优雅
+            if (Math.random() < 0.015) {
+                createFirework(); // 在屏幕任意位置创建烟花
+            }
+
+            // 偶尔创建从底部上升的传统烟花
+            if (Math.random() < 0.008) {
+                createRisingFirework();
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        // 开始动画
+        animate();
+
+        // 初始礼花 - 优化数量和时间间隔
+        setTimeout(() => {
+            // 创建适量烟花在不同位置，间隔更长
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => createFirework(), i * 800);
+            }
+            // 创建一些从底部上升的烟花
+            for (let i = 0; i < 2; i++) {
+                setTimeout(() => createRisingFirework(), i * 1200 + 1500);
+            }
+        }, 1500);
+    </script>
+</body>
+</html>
